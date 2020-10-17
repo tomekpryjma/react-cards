@@ -9,7 +9,6 @@ function App() {
     const [cardBackground, setCardBackground] = useState({});
     const urlBase = process.env.REACT_APP_DOMAIN;
     const customRestNamespace = '/wp-json/barker/v1';
-    const wpRestNamespace = '/wp-json/wp/v2';
     const cardBackgroundRoute = urlBase + customRestNamespace + '/card-background';
     const cardsRoute = urlBase + customRestNamespace + '/random-cards';
     const cardsParams = {params: {limit: 3, post_type: 'cards-votive'}};
