@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
+import CardText from './CardText';
 
 function Card(props) {
     const [flipped, setFlipped] = useState(false);
@@ -17,20 +18,24 @@ function Card(props) {
 
     const onClick = () => {
         timeline.reversed(! timeline.reversed());
+        setFlipped(! timeline.reversed());
     }
 
     return(
-        <div className="card" onClick={onClick}>
-            <div
-                className="front"
-                style={{backgroundImage: `url(${props.card_image_url})`}}
-                ref={frontElement}
-            ></div>
-            <div
-                className="back"
-                style={{backgroundImage: `url(${props.card_background_url})`}}
-                ref={backElement}
-            ></div>
+        <div className="card-wrapper">
+            <div className="card" onClick={onClick}>
+                <div
+                    className="front"
+                    style={{backgroundImage: `url(${props.card_image_url})`}}
+                    ref={frontElement}
+                ></div>
+                <div
+                    className="back"
+                    style={{backgroundImage: `url(${props.card_background_url})`}}
+                    ref={backElement}
+                ></div>
+            </div>
+            <CardText card_text={props.card_text} flipped={flipped}/>
         </div>
     );
 }
