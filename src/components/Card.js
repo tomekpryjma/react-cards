@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import gsap, { TimelineMax, TimelineLite } from 'gsap';
+import gsap from 'gsap';
 
 function Card(props) {
     const [flipped, setFlipped] = useState(false);
