@@ -11,8 +11,8 @@ function App() {
     const customRestNamespace = '/wp-json/barker/v1';
     const wpRestNamespace = '/wp-json/wp/v2';
     const cardBackgroundRoute = urlBase + customRestNamespace + '/card-background';
-    const cardsRoute = urlBase + wpRestNamespace + '/cards-votive';
-    const cardsParams = {params: {per_page: 100}};
+    const cardsRoute = urlBase + customRestNamespace + '/random-cards';
+    const cardsParams = {params: {limit: 3, post_type: 'cards-votive'}};
 
     useEffect(() => {
         axios.get(cardBackgroundRoute).then(response => {
