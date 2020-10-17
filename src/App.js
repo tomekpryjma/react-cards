@@ -27,17 +27,19 @@ function App() {
 
     return (
         <div className="App">
-            {
-                cards.map((card, index) => {
-                    return(
-                        <Card
-                            key={index}
-                            card_image_url={card.card_image_url}
-                            card_background_url={cardBackground}
-                        />
-                    );
-                })
-            }
+            <div class="card-container">
+                {
+                    cards.map((card, index) => {
+                        return(
+                            <Card
+                                key={index}
+                                card_image_url={card.card_image_url}
+                                card_background_url={cardBackground}
+                            />
+                        );
+                    })
+                }
+            </div>
         </div>
     );
 }
