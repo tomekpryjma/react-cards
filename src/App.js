@@ -35,6 +35,7 @@ function App() {
                                 key={index}
                                 card_image_url={card.card_image_url}
                                 card_background_url={cardBackground}
+                                card_text={card.card_text}
                             />
                         );
                     })
