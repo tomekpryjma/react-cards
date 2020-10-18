@@ -44,6 +44,9 @@ function Card(props) {
         if (readMoreHeight && textElement.current.clientHeight > readMoreHeight) {
             heightToExpandTo = textElement.current.clientHeight;
         }
+        if (textElement.current.clientHeight < heightToExpandTo) {
+            heightToExpandTo = textElement.current.clientHeight;
+        }
 
         expandTimeline
             .clear()
