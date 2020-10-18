@@ -8,6 +8,7 @@ function Card(props) {
     const [fadeTimeline] = useState(gsap.timeline({paused: true}));
     const [expandTimeline] = useState(gsap.timeline({paused: true}));
     const [readMoreIsExpanded, setReadMoreIsExpanded] = useState(false);
+    const [readMoreHeight, setReadMoreHeight] = useState(0);
     const cardElement = useRef(null);
     const wrapperElement = useRef(null);
     const textWrapper = useRef(null);
@@ -24,20 +25,36 @@ function Card(props) {
             {opacity: 1}
         );
         TweenMax.set(textWrapper.current, {height: 0});
+        if (! readMoreHeight) {
+            setReadMoreHeight(textElement.current.clientHeight);
+        }
+
+        window.addEventListener('resize', () => {
+            setReadMoreHeight(textElement.current.clientHeight);
+        })
     }, []);
 
     useEffect(() => {
         TweenMax.set(textWrapper.current, {height: 0});
+        let heightToExpandTo = textElement.current.clientHeight;
+
+        if (readMoreHeight) {
+            heightToExpandTo = readMoreHeight;
+        }
+        if (readMoreHeight && textElement.current.clientHeight > readMoreHeight) {
+            heightToExpandTo = textElement.current.clientHeight;
+        }
+
         expandTimeline
             .clear()
             .to(
                 textWrapper.current,
                 {
-                    height: textElement.current.clientHeight,
+                    height: heightToExpandTo,
                     ease: 'expo.inOut'
                 }
             ).reverse();
-    }, [props.card_text])
+    }, [props.card_text, readMoreHeight])
 
     useEffect(() => {
         const expandReverseDelay = props.time_delay;
