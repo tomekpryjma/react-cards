@@ -64,8 +64,10 @@ function App() {
 
     return (
         <div className="App">
-            <button onClick={handleResetClick}>Shuffle</button>
-            <div className="card-container">
+            <div className="custom-container">
+                <button className="reset-button" onClick={handleResetClick}>Shuffle</button>
+            </div>
+            <div className="card-container custom-container">
                 {
                     cards.map((card, index) => {
                         const time_delay = (index + 1) * 0.35;
