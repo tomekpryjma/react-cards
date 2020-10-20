@@ -1,0 +1,75 @@
+* {
+    box-sizing: border-box;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    margin: 20px auto;
+    max-width: 900px;
+}
+
+.card {
+    background-color: transparent;
+    height: 400px;
+    perspective: 1000px;
+    width: 400px;
+}
+
+.card-inner {
+    position: relative;
+    transition: transform 0.5s ease 0s;
+    transform: rotateY(180deg);
+    transform-style: preserve-3d;
+    height: 300px;
+    width: 200px;
+
+    &.flip {
+        transform: rotateY(0deg);
+    }
+}
+
+.card-front, .card-back {
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    position: absolute;
+    height: 100%;
+    width: 100%;
+}
+
+.card-front {
+    background-color: rgb(157, 255, 0);
+
+    h3, p {
+        padding: 0 10px;
+    }
+}
+.card-back  {
+    background-color: rgb(78, 78, 236);
+    transform: rotateY(-180deg);
+}
+
+.accordion {
+    opacity: 0;
+    transition: all 0.5s ease 0s;
+    visibility: hidden;
+
+    &.show {
+        opacity: 1;
+        visibility: visible;
+    }
+}
+
+.accordion-inner {
+    background-color: lightgrey;
+    overflow: hidden;
+    transition: all 0.5s cubic-bezier(1, -0.8, 0, 1.36) 0s;
+
+    .active & {
+        transition: all 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55) 0s;
+    }
+
+    .accordion-content {
+        padding: 10px;
+    }
+}
