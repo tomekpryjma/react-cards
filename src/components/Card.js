@@ -1,9 +1,29 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Accordion from './Accordion';
 
 function Card(props) {
     const [cardIsFlipped, setCardIsFlipped] = useState(false);
     const [delayFlipBack, setDelayFlipBack] = useState(0);
+
+    useEffect(() => {
+        let updatedDelay = props.order * 0.5;
+        if (delayFlipBack) {
+            updatedDelay = props.order * delayFlipBack;
+        }
+        if (props.triggerReset) {
+            // setDelayFlipBack(updatedDelay);
+            const timeout = setTimeout(() => {
+                setCardIsFlipped(false);
+                clearTimeout(timeout);
+            }, props.order * 1000)
+        }
+        console.log(props.triggerReset);
+        // setDelayFlipBack(0);
+    }, [props.triggerReset]);
+
+    useEffect(() => {
+        console.log(delayFlipBack)
+    }, [delayFlipBack])
 
     const handleCardInnerClick = () => {
         const opposite = ! cardIsFlipped;
@@ -37,6 +57,8 @@ function Card(props) {
                 content={props.content}
                 cardIsFlipped={cardIsFlipped}
                 notifyCardOfAccordionState={notifyCardOfAccordionState}
+                delayFlipBack={delayFlipBack}
+                triggerReset={props.triggerReset}
             />
         </div>
     );
