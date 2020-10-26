@@ -1,50 +1,38 @@
 import React, { useState, useRef, useEffect } from 'react';
 
 export default function Accordion(props) {
-    const [accordionActive, setAccordionActive] = useState(false);
-    const [fadeIn, setFadeIn] = useState(false);
+    const [isOpen, setIsOpen] = useState(false);
     const [height, setHeight] = useState(0);
     const contentRef = useRef(null);
+    const { cardIsFlipped, closeAccordion, updateIsAccordionOpen } = props;
+    
+    useEffect(() => {
+        if (closeAccordion) {
+            setIsOpen(false);
+        }
+    }, [closeAccordion])
 
     useEffect(() => {
-        props.notifyCardOfAccordionState(accordionActive);
-        if (accordionActive) {
+        updateIsAccordionOpen(isOpen)
+
+        if (isOpen) {
             setHeight(contentRef.current.scrollHeight);
-            return;
-        }
-        setHeight(0);
-    }, [accordionActive])
-
-    useEffect(() => {
-        if (! height) {
-        }
-    }, [height])
-
-    useEffect(() => {
-        if (props.cardIsFlipped) {
-            setFadeIn(true);
         }
         else {
-            setTimeout(() => {
-                setFadeIn(false);
-            }, 500)
+            setHeight(0);
         }
 
-        if (! props.cardIsFlipped && accordionActive) {
-            toggleAccordion();
-        }
-    }, [props.cardIsFlipped])
+    }, [isOpen])
 
-    const toggleAccordion = () => {
-        setAccordionActive(! accordionActive);
+    const onButtonClick = () => {
+        setIsOpen(! isOpen);
     }
 
     return(
         <div
-            className={`accordion ${accordionActive ? 'active' : ''} ${fadeIn ? 'show' : ''}`}
-            style={{transitionDelay: ! props.cardIsFlipped ? `${props.delayFlipBack / 2}s` : ''}}
+            className={`accordion ${cardIsFlipped ? 'show' : ''}`}
             >
-            <button onClick={toggleAccordion}>Read more</button>
+            <button onClick={onButtonClick}>Read more</button>
             <div className="accordion-inner" style={{height: height}}>
                 <div className="accordion-content" ref={contentRef}>
                     {props.content}

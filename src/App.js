@@ -1,53 +1,88 @@
 import React, { useEffect, useState } from 'react';
-import logo from './logo.svg';
 import './App.scss';
+import axios from 'axios';
 import Card from './components/Card';
 
 function App() {
     const [triggerReset, setTriggerReset] = useState(false);
     const [flippedCards, setFlippedCards] = useState([]);
-    const cards = [{id: 1, title: 'card 1', description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.'}, {id: 2, title: 'card 2', description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'},{id: 3, title: 'card 3', description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'}];
-    const limit = 4;
-    const outlines = [];
+    const [flippedCardsLength, setFlippedCardsLength] = useState(0);
+    const [cardBackground, setCardBackground] = useState({});
+    const [cards, setCards] = useState([]);
+    const resetTimeDelay = 800;
+    const urlBase = 'https://garrybarkeronline.com/';
+    const customRestNamespace = '/wp-json/barker/v1';
+    const cardBackgroundRoute = urlBase + customRestNamespace + '/card-background';
+    let cardsRoute = urlBase + customRestNamespace + '/random-cards';
+    const cardsParams = {params: {limit: 3, post_type: 'cards-votive'}};
+    
+    useEffect(() => {
+        axios.get(cardBackgroundRoute).then(response => {
+            setCardBackground(response.data);
+        });
+        getCards();
+    }, []);
 
-    for (let index = 0; index < limit; index++) {
-        outlines.push(<div id={`outline-${index}`} className="outline"/>);
+    useEffect(() => {
+        if (! flippedCardsLength && triggerReset) {
+            const timeout = setTimeout(() => {
+                setTriggerReset(false);
+                getCards();
+                clearTimeout(timeout);
+            }, resetTimeDelay / 4)
+        }
+    }, [flippedCardsLength])
+
+    const getCards = () => {
+        cardsRoute += '?cache-buster=' + Date.now();
+        axios.get(cardsRoute, cardsParams).then(response => {
+            setCards(response.data);
+        });
     }
 
     const onResetClick = () => {
-        setTriggerReset(! triggerReset);
+        if (flippedCardsLength) {
+            setTriggerReset(true);
+        }
     }
 
-    const updatedFlippedCards = (flippedCardId) => {
-        const currentFlippedCards = [...flippedCards];
-        const indexOfFlippedCard = currentFlippedCards.indexOf(flippedCards);
+    const updateFlippedCards = (cardId) => {
+        const currentFlippedCards = flippedCards;
+        const indexOfFlippedCard = currentFlippedCards.indexOf(cardId);
 
         if (indexOfFlippedCard === -1) {
-            currentFlippedCards.push(flippedCards);
+            currentFlippedCards.push(cardId);
         }
         else {
             currentFlippedCards.splice(indexOfFlippedCard, 1);
         }
 
+        currentFlippedCards.sort((a, b) => a - b);
         setFlippedCards(currentFlippedCards);
+        setFlippedCardsLength(currentFlippedCards.length);
     }
 
     return(
         <div className="App">
             <div className="container">
-                <button onClick={onResetClick}>Reset</button>
+                <button onClick={onResetClick}>
+                    {triggerReset ? 'Resetting...' : 'Ready to reset'}
+                </button>
             </div>
             <div className="container">
                 {
                     cards.map((card, index) => {
                         return <Card
                             key={index}
-                            order={index}
-                            id={card.id}
-                            title={card.title}
-                            content={card.description}
+                            id={index}
+                            cardImage={card.card_image_url}
+                            cardBackground={cardBackground}
+                            title={card.post_title}
+                            content={card.card_text}
                             triggerReset={triggerReset}
                             flippedCards={flippedCards}
+                            updateFlippedCards={updateFlippedCards}
+                            resetTimeDelay={resetTimeDelay}
                             />
                     })
                 }
