@@ -29,7 +29,7 @@ function App() {
                 setTriggerReset(false);
                 getCards();
                 clearTimeout(timeout);
-            }, resetTimeDelay / 4)
+            }, resetTimeDelay / 2)
         }
     }, [flippedCardsLength])
 
