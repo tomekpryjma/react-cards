@@ -39,14 +39,11 @@
 }
 
 .card-front {
-    background-color: rgb(157, 255, 0);
-
     h3, p {
         padding: 0 10px;
     }
 }
 .card-back  {
-    background-color: rgb(78, 78, 236);
     transform: rotateY(-180deg);
 }
 
