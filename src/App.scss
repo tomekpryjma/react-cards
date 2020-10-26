@@ -63,11 +63,7 @@
 .accordion-inner {
     background-color: lightgrey;
     overflow: hidden;
-    transition: all 0.5s cubic-bezier(1, -0.8, 0, 1.36) 0s;
-
-    .active & {
-        transition: all 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55) 0s;
-    }
+    transition: all 0.5s cubic-bezier(1, -0.23, 0, 1.36) 0s;
 
     .accordion-content {
         padding: 10px;
