@@ -31,6 +31,7 @@
 
 .card-front, .card-back {
     -webkit-backface-visibility: hidden;
+    background-size: cover;
     backface-visibility: hidden;
     position: absolute;
     height: 100%;
@@ -38,14 +39,11 @@
 }
 
 .card-front {
-    background-color: rgb(157, 255, 0);
-
     h3, p {
         padding: 0 10px;
     }
 }
 .card-back  {
-    background-color: rgb(78, 78, 236);
     transform: rotateY(-180deg);
 }
 
@@ -63,11 +61,7 @@
 .accordion-inner {
     background-color: lightgrey;
     overflow: hidden;
-    transition: all 0.5s cubic-bezier(1, -0.8, 0, 1.36) 0s;
-
-    .active & {
-        transition: all 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55) 0s;
-    }
+    transition: all 0.5s cubic-bezier(1, -0.23, 0, 1.36) 0s;
 
     .accordion-content {
         padding: 10px;

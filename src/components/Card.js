@@ -2,63 +2,82 @@ import React, { useEffect, useState } from 'react';
 import Accordion from './Accordion';
 
 function Card(props) {
-    const [cardIsFlipped, setCardIsFlipped] = useState(false);
-    const [delayFlipBack, setDelayFlipBack] = useState(0);
+    const [isFlipped, setIsFlipped] = useState(false);
+    const [closeAccordion, setCloseAccordion] = useState(false);
+    const [isAccordionOpen, setIsAccordionOpen] = useState(false);
+    const {
+        id,
+        updateFlippedCards,
+        triggerReset,
+        flippedCards,
+        resetTimeDelay,
+        cardBackground,
+        cardImage
+    } = props;
 
     useEffect(() => {
-        let updatedDelay = props.order * 0.5;
-        if (delayFlipBack) {
-            updatedDelay = props.order * delayFlipBack;
+        if (triggerReset && flippedCards.indexOf(id) !== -1) {
+            reset();
         }
-        if (props.triggerReset) {
-            // setDelayFlipBack(updatedDelay);
+    }, [triggerReset])
+
+    const reset = async () => {
+        await new Promise(() => {
             const timeout = setTimeout(() => {
-                setCardIsFlipped(false);
+                closeAccordionAndFlipCardOver();
                 clearTimeout(timeout);
-            }, props.order * 1000)
-        }
-        console.log(props.triggerReset);
-        // setDelayFlipBack(0);
-    }, [props.triggerReset]);
-
-    useEffect(() => {
-        console.log(delayFlipBack)
-    }, [delayFlipBack])
-
-    const handleCardInnerClick = () => {
-        const opposite = ! cardIsFlipped;
-        setCardIsFlipped(opposite);
+            }, flippedCards.indexOf(id) * resetTimeDelay);
+        });
     }
 
-    const notifyCardOfAccordionState = (accordionActive) => {
-        if (accordionActive) {
-            setDelayFlipBack(1);
+    const onCardInnerClick = () => {
+        if (triggerReset) {
             return;
         }
-        setDelayFlipBack(0);
+        if (! isFlipped) {
+            setIsFlipped(true);
+        }
+        else {
+            closeAccordionAndFlipCardOver();
+        }
+        updateFlippedCards(id);
+    }
+
+    const closeAccordionAndFlipCardOver = () => {
+        if (! isAccordionOpen && isFlipped) {
+            setIsFlipped(false);
+        }
+        else if (isAccordionOpen && isFlipped) {
+            const delay = 250;
+            setCloseAccordion(true);
+            const timeout = setTimeout(() => {
+                setIsFlipped(false);
+                setCloseAccordion(false);
+                clearTimeout(timeout);
+            }, delay)
+        }
+
+        if (triggerReset && flippedCards.indexOf(id) !== -1) {
+            updateFlippedCards(id);
+        }
     }
 
     return(
         <div className="card">
             <div
-                className={`card-inner ${cardIsFlipped ? 'flip' : ''}`}
-                onClick={handleCardInnerClick}
-                style={{transitionDelay: `${delayFlipBack}s`}}
-                >
-                <div className="card-front">
-                    <h3>{ props.title }</h3>
+                onClick={onCardInnerClick}
+                className={`card-inner ${isFlipped ? 'flip' : ''}`}>
+                <div className="card-front" style={{backgroundImage: `url(${cardImage})`}}>
                     <p>{ props.description }</p>
                 </div>
 
-                <div className="card-back"></div>
+                <div className="card-back" style={{backgroundImage: `url(${cardBackground})`}}></div>
             </div>
             <Accordion
-                title={props.title}
                 content={props.content}
-                cardIsFlipped={cardIsFlipped}
-                notifyCardOfAccordionState={notifyCardOfAccordionState}
-                delayFlipBack={delayFlipBack}
-                triggerReset={props.triggerReset}
+                cardIsFlipped={isFlipped}
+                updateIsAccordionOpen={(bool) => setIsAccordionOpen(bool)}
+                closeAccordion={closeAccordion}
             />
         </div>
     );
